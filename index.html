@@ -83,7 +83,7 @@ details{margin-top:.4rem}details summary{font-size:.45rem;color:var(--amber);cur
 <div class="topbar">
   <h1><span class="pulse"></span>OG.X Validator</h1>
   <div class="counter"><span id="done-count">0</span>/<span id="total-count">283</span> <span style="font-size:.48rem;color:var(--muted);">💧77 ⚡142 🌱64</span></div>
-  <div style="font-size:.42rem;color:var(--muted);">✏️ all editable · 🗑️ delete · 🔍 Grok</div>
+  <div style="font-size:.42rem;color:var(--muted);">✏️ all editable · 🗑️ delete · 🔍 Grok · <span onclick="setSyncUrl()" style="color:var(--cyan);cursor:pointer;text-decoration:underline;">📤 sync</span></div>
 </div>
 <div class="progress-wrap"><div class="progress-fill" id="progress"></div></div>
 <div class="card-area" id="card-area"><div style="text-align:center;padding:3rem;color:var(--muted);font-size:.7rem;">⏳ Loading 283 rules...</div></div>
@@ -124,6 +124,25 @@ function getOverrides(sym){
   var defaults=getCat(r?r.cat:'💧 Water');
   return {note:o.note||null,pros:o.pros||defaults.pros,cons:o.cons||defaults.cons,info:o.info||defaults.info};}
 
+
+var syncUrl=localStorage.getItem('ogx_sync_url')||'http://192.168.0.17:8765';
+function setSyncUrl(){{var u=prompt('Sync server URL:',syncUrl);if(u){{syncUrl=u;localStorage.setItem('ogx_sync_url',u);alert('Sync URL set to: '+u);}}}}
+function syncToServer(){{
+  if(Object.keys(overrides).length===0&&deleted.length===0){{alert('No edits to sync. Make some changes first.');return;}}
+  var payload={{overrides:overrides,deleted:deleted,source:'tablet',syncedAt:new Date().toISOString()}};
+  var statusEl=document.createElement('div');statusEl.style.cssText='position:fixed;bottom:1rem;right:1rem;background:var(--card);border:1px solid var(--cyan);color:var(--cyan);padding:.5rem 1rem;border-radius:8px;font-size:.55rem;z-index:9999;';statusEl.textContent='📤 Syncing...';document.body.appendChild(statusEl);
+  fetch(syncUrl+'/sync',{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify(payload)}})
+    .then(function(r){{return r.json();}})
+    .then(function(data){{
+      statusEl.textContent='✅ Synced! '+data.results.length+' changes applied';
+      statusEl.style.borderColor='var(--emerald)';statusEl.style.color='var(--emerald)';
+      setTimeout(function(){{statusEl.remove();}},3000);
+    }})
+    .catch(function(e){{
+      statusEl.textContent='❌ Sync failed: '+e.message+'\nMake sure you are on the same WiFi as the server ('+syncUrl+')';
+      statusEl.style.borderColor='var(--rose)';statusEl.style.color='var(--rose)';
+      setTimeout(function(){{statusEl.remove();}},5000);
+    }});}}
 function render(){
   var done=validated.length+deleted.length;
   document.getElementById('done-count').textContent=done;
@@ -144,6 +163,7 @@ function render(){
   h+='</div>';
   h+='<div class="actions">';
   h+='<button class="btn btn-save" onclick="saveAll()">💾 Save</button>';
+  h+='<button class="btn btn-grok" onclick="syncToServer()" style="background:#0a1628;color:var(--cyan);border-color:var(--cyan);" title="Send edits to server">📤 Sync</button>';
   h+='<button class="btn btn-delete" onclick="saveAll();doDelete()">🗑️ Delete</button>';
   h+='<button class="btn btn-grok" onclick="openGrok()">🔍 Grok</button>';
   h+='<button class="btn btn-flag" onclick="saveAll();doFlag()">⚠ Flag</button>';
