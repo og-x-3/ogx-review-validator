@@ -26,6 +26,7 @@ function render(){
   h+='<div class="pc-box pc-pros"><span class="pc-label">PROS ✓</span><div class="editable" id="pros-edit" contenteditable="true">'+ov.pros+'</div></div>';
   h+='<div class="pc-box pc-cons"><span class="pc-label">CONS ✗</span><div class="editable" id="cons-edit" contenteditable="true">'+ov.cons+'</div></div>';
   h+='</div>';
+  h+='<div style="margin-top:.3rem;"><div style="font-size:.4rem;color:var(--rose);margin-bottom:.1rem;">📝 Instructions for Hermes (what to change):</div><textarea id="hermes-instructions" placeholder="e.g. change price to $140, add Panama humidity note, delete this rule..." style="width:100%;background:#450a0a11;border:1px solid #7f1d1d44;color:var(--rose);font-size:.48rem;font-family:inherit;padding:.3rem;border-radius:5px;resize:vertical;min-height:30px;max-height:60px;">'+(ov.instructions||'')+'</textarea></div>';
   h+='<div class="actions">';
   h+='<button class="btn btn-save" onclick="saveAndNext()">💾 Save & Next</button>';
   h+='<button class="btn btn-delete" onclick="saveAll();doDelete()">🗑️ Delete</button>';
