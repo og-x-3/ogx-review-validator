@@ -7,7 +7,7 @@ function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()
 function restart(){activeRules=RULES.filter(function(r){return deleted.findIndex(function(d){return d.sym===r.sym;})===-1;});queue=activeRules.map(function(r){return Object.assign({},r);});shuffle(queue);validated=[];flagged=[];skipped=[];history=[];document.getElementById('total-count').textContent=TOTAL;render();}
 restart();
 function getCat(c){return CAT[c]||CAT["💧 Water"];}
-function getOverrides(sym){var o=overrides[sym]||{};var r=RULES.find(function(r){return r.sym===sym;});var d=getCat(r?r.cat:'💧 Water');return {note:o.note||null,pros:o.pros||d.pros,cons:o.cons||d.cons,info:o.info||d.info};}
+function getOverrides(sym){var o=overrides[sym]||{};var r=RULES.find(function(r){return r.sym===sym;});var d=getCat(r?r.cat:'💧 Water');return {note:o.note||null,pros:o.pros||d.pros,cons:o.cons||d.cons,info:o.info||d.info,instructions:o.instructions||''};}
 function render(){
   var done=validated.length+deleted.length;
   document.getElementById('done-count').textContent=done;
@@ -36,7 +36,7 @@ function render(){
   h+='<button class="btn btn-validate" onclick="saveAll();doValidate()">✓ Validate</button>';
   h+='</div></div>';
   document.getElementById('card-area').innerHTML=h;}
-function saveAll(){if(queue.length===0)return;var sym=queue[0].sym,noteEl=document.getElementById('note-edit'),prosEl=document.getElementById('pros-edit'),consEl=document.getElementById('cons-edit');if(!overrides[sym])overrides[sym]={};if(noteEl)overrides[sym].note=noteEl.innerText;if(prosEl)overrides[sym].pros=prosEl.innerText;if(consEl)overrides[sym].cons=consEl.innerText;Object.keys(overrides[sym]).forEach(function(k){if(!overrides[sym][k])delete overrides[sym][k];});if(Object.keys(overrides[sym]).length===0)delete overrides[sym];localStorage.setItem('ogx_editor_overrides',JSON.stringify(overrides));}
+function saveAll(){if(queue.length===0)return;var sym=queue[0].sym,noteEl=document.getElementById('note-edit'),prosEl=document.getElementById('pros-edit'),consEl=document.getElementById('cons-edit');if(!overrides[sym])overrides[sym]={};if(noteEl)overrides[sym].note=noteEl.innerText;if(prosEl)overrides[sym].pros=prosEl.innerText;if(consEl)overrides[sym].cons=consEl.innerText;var instEl=document.getElementById('hermes-instructions');if(instEl&&instEl.value.trim())overrides[sym].instructions=instEl.value.trim();else if(instEl)delete overrides[sym].instructions;Object.keys(overrides[sym]).forEach(function(k){if(!overrides[sym][k])delete overrides[sym][k];});if(Object.keys(overrides[sym]).length===0)delete overrides[sym];localStorage.setItem('ogx_editor_overrides',JSON.stringify(overrides));}
 function saveAndNext(){saveAll();if(queue.length===0)return;var r=queue.shift();skipped.push(r);history.push({action:'skip',rule:r});render();}
 function doDelete(){if(queue.length===0)return;var r=queue.shift();deleted.push(r);localStorage.setItem('ogx_deleted',JSON.stringify(deleted));history.push({action:'delete',rule:r});render();}
 function openGrok(){if(queue.length===0)return;var r=queue[0];var q=encodeURIComponent('off-grid '+r.sym.replace(/_/g,' ')+' '+r.cat.replace('💧 ','water ').replace('⚡ ','electricity ').replace('🌱 ','food ')+' guide pricing specs');window.open('https://grok.com/?q='+q,'_blank');}
