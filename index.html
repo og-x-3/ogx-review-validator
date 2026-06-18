@@ -90,7 +90,7 @@ var deletedData=JSON.parse(localStorage.getItem('ogx_deleted')||'[]');
 deleted=deletedData;
 var activeRules=RULES.filter(function(r){return deleted.findIndex(function(d){return d.sym===r.sym;})===-1;});
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}}
-function restart(){activeRules=RULES.filter(function(r){return deleted.findIndex(function(d){return d.sym===r.sym;})===-1;});queue=activeRules.map(function(r){return Object.assign({},r);});shuffle(queue);validated=[];flagged=[];skipped=[];actionHistory=[];document.getElementById('total-count').textContent=TOTAL;render();}
+function restart(){activeRules=RULES.filter(function(r){return deleted.findIndex(function(d){return d.sym===r.sym;})===-1;});var enriched=[],normal=[];activeRules.forEach(function(r){if(r.fullNote&&r.fullNote.length>500)enriched.push(Object.assign({},r));else normal.push(Object.assign({},r));});shuffle(enriched);shuffle(normal);queue=enriched.concat(normal);validated=[];flagged=[];skipped=[];actionHistory=[];document.getElementById('total-count').textContent=TOTAL;render();}
 restart();
 function getCat(c){return CAT[c]||CAT["💧 Water"];}
 function getOverrides(sym){var o=overrides[sym]||{};var r=RULES.find(function(r){return r.sym===sym;});var d=getCat(r?r.cat:'💧 Water');return {note:o.note||null,pros:o.pros||d.pros,cons:o.cons||d.cons,info:o.info||d.info,instructions:o.instructions||''};}
