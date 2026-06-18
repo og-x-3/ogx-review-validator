@@ -162,7 +162,7 @@ function render(){
   h+='<div class="pc-box pc-cons"><span class="pc-label">CONS ✗</span><div class="editable" id="cons-edit" contenteditable="true">'+ov.cons+'</div></div>';
   h+='</div>';
   h+='<div class="actions">';
-  h+='<button class="btn btn-save" onclick="saveAll()">💾 Save</button>';
+  h+='<button class="btn btn-save" onclick="saveAndNext()">💾 Save & Next</button>';
   h+='<button class="btn btn-grok" onclick="syncToServer()" style="background:#0a1628;color:var(--cyan);border-color:var(--cyan);" title="Send edits to server">📤 Sync</button>';
   h+='<button class="btn btn-delete" onclick="saveAll();doDelete()">🗑️ Delete</button>';
   h+='<button class="btn btn-grok" onclick="openGrok()">🔍 Grok</button>';
