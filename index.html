@@ -104,7 +104,7 @@ Perennial crops need less labor."}}</script>
 <script>
 var CAT=JSON.parse(document.getElementById('cat-data').textContent);
 var RULES=JSON.parse(document.getElementById('rules-data').textContent);
-var TOTAL=RULES.length,WC=77,EC=142,FC=64;
+var TOTAL=RULES.length,WC=77,EC=142,FC=64;var SECTIONS=[{"index": 0, "label": "\ud83d\udca7 Water", "type": "chapter"}, {"index": 77, "label": "\u26a1 Electricity", "type": "chapter"}, {"index": 219, "label": "\ud83c\udf31 Food", "type": "chapter"}];
 var queue,validated=[],flagged=[],skipped=[],deleted=[],actionHistory=[];
 var overrides=JSON.parse(localStorage.getItem('ogx_editor_overrides')||'{}');
 var deletedData=JSON.parse(localStorage.getItem('ogx_deleted')||'[]');
@@ -125,7 +125,7 @@ function render(){
   var r=queue[0],cd=getCat(r.cat),ov=getOverrides(r.sym);
   var priceDisplay=r.price===0?'—':'$'+r.price;
   var noteText=ov.note||r.note;
-  var h='<div class="card">';
+  var h='';var si=-1;for(var i=0;i<SECTIONS.length;i++){if(SECTIONS[i].index===TOTAL-queue.length-1){si=i;break;}}if(si>=0)h+='<div style="text-align:center;padding:.3rem;font-size:.48rem;color:var(--cyan);opacity:.7;border-bottom:1px solid var(--border);margin-bottom:.2rem;">SECTION '+SECTIONS[si].label+'</div>';h+='<div class="card">';
   h+='<div class="card-header"><span class="card-symbol">'+r.sym+'</span><div class="card-price-block"><div class="card-price">'+priceDisplay+'</div><div class="card-range">'+r.range+' '+r.unit+'</div></div></div>';
   h+='<div class="badges"><span class="badge badge-'+r.conf+'">'+r.conf+'</span>'+(r.safety?'<span class="badge badge-safety">SAFETY</span>':'')+'<span class="badge badge-cat">'+r.cat+'</span></div>';
   h+='<div class="note-edit editable" id="note-edit" contenteditable="true">'+noteText+'</div>';
